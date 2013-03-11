@@ -33,17 +33,19 @@ body {
   font-style: normal;
 }
 
-#card1 {
-	width: 10em;
-  height: 10em;
+#joystick {
+  padding: 0;
+	width: 12em;
+  height: 12em;
   left: 1em;
   top: 2em;
+  background-color: rgba(51, 181, 229, 0.05);
 }
 
 #card2 {
   width: 28em;
   height: 16em;
-  left: 13em;
+  left: 14em;
   top: 2em;
 }
 
@@ -52,4 +54,23 @@ body {
   font-size: 18px;
   line-height: 26px;
   color: #999;
+}
+
+.background {
+  width: 9.6em;
+  left: 1.2em;
+  margin-top: 1.2em;
+  position: relative;
+  background-color: white;
+  /*border: 1px solid rgba(51, 181, 229, 0.5);*/
+}
+
+.knob {
+  position: absolute;
+  width: 20%;
+  top: 50%;
+  left: 50%;
+  margin-top: -10%;
+  margin-left: -10%;
+  background: rgb(51, 181, 229);
 }

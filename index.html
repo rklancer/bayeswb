@@ -1,23 +1,28 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Bootstrap 101 Template</title>
+    <title>Bayes Workbench</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link href="css/bootstrap.css" rel="stylesheet" media="screen">
-    <link href='http://fonts.googleapis.com/css?family=Roboto:300,400italic,300italic,400' rel='stylesheet' type='text/css'>    
-    <link href="css/style.css" rel="stylesheet" media="screen">    
+    <link href='http://fonts.googleapis.com/css?family=Roboto:300,400italic,300italic,400' rel='stylesheet' type='text/css'>
+    <link href="css/style.css" rel="stylesheet" media="screen">
   </head>
   <body class="light-gray">
-    <div id= "card1" class="card">
-      <h1>Motion</h1>
-      <p>This is some text I'm <em>inordinately</em> proud of.</p>
+
+    <div id= "joystick" class="card">
+      <div id="background" class="background">
+        <div id="knob" class="knob"></div>
+      </div>
     </div>
+
     <div id= "card2" class="card">
       <h1><em>2:27</em> to Work</h1>
       <p>83 departs at 11:29 PM (walk 2 min to Beacon St @ Washington St)</p>
-    </div>    
+    </div>
+
     <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="js/touchjoy.js"></script>
     <script src="js/bootstrap.js"></script>
   </body>
 </html>
