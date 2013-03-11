@@ -39,7 +39,7 @@ body {
   height: 12em;
   left: 1em;
   top: 2em;
-  background-color: rgba(51, 181, 229, 0.05);
+  background-color: rgb(204, 236, 248);
 }
 
 #card2 {
@@ -62,7 +62,7 @@ body {
   margin-top: 1.2em;
   position: relative;
   background-color: white;
-  /*border: 1px solid rgba(51, 181, 229, 0.5);*/
+  border: 1px solid rgba(51, 181, 229, 0.5);
 }
 
 .knob {
