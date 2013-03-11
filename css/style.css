@@ -1,0 +1,55 @@
+/* sane box model */
+* { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+
+body {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.light-gray {
+  background-color: #e5e5e5;
+}
+
+.card {
+  background-color: white;
+  position: absolute;
+  padding: 1em;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+
+  box-shadow: 0 0.2em 0 0 #d4d4d4;
+}
+
+.card h1 {
+  font-size: 2em;
+  font-weight: 300;
+}
+
+.card em {
+  font-weight: 400;
+  font-style: normal;
+}
+
+#card1 {
+	width: 10em;
+  height: 10em;
+  left: 1em;
+  top: 2em;
+}
+
+#card2 {
+  width: 28em;
+  height: 16em;
+  left: 13em;
+  top: 2em;
+}
+
+#card2 p {
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 26px;
+  color: #999;
+}

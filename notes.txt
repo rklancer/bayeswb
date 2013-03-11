@@ -1,0 +1,6 @@
+openlayers for floor plan?
+
+ (1) need a good editor
+ (2) is it easy to use openlayers for the floor plan?
+ 
+ 
