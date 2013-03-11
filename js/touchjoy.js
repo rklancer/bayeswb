@@ -17,8 +17,9 @@ function startSending() {
 
 function stopSending() {
   // one last time
-  postJoystickPosition();
+  if (intervalID) postJoystickPosition();
   clearInterval(intervalID);
+  intervalID = null;
 }
 
 // draws "joystick", updates x and y
@@ -40,7 +41,7 @@ function joystickGo() {
 
   function centerKnob() {
     var $el = $(dragInfo.element),
-        width = $('#background').width();
+        width = $('#joystick .background').width();
 
     $el.animate({
       left: width/2,
@@ -101,8 +102,8 @@ function joystickGo() {
   }
 
   function adjustDimensions() {
-    var $background = $('#background'),
-        $knob = $('#knob'),
+    var $background = $('#joystick .background'),
+        $knob = $('#joystick .knob'),
         offset = $background.offset(),
         width = $background.width();
 
@@ -136,8 +137,8 @@ function joystickGo() {
   }
 
   $(function() {
-    var $background = $('#background'),
-        $knob = $('#knob');
+    var $background = $('#joystick .background'),
+        $knob = $('#joystick .knob');
 
     adjustDimensions();
     dragInfo.element = $knob[0];
@@ -147,7 +148,6 @@ function joystickGo() {
     $(document).bind('touchend mouseup', wrapForTouch(dragEnd));
 
     $background.bind('mousedown', function() { return false; });
-    $(window).bind('resize', adjustDimensions);
   });
 
 }
