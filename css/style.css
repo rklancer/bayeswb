@@ -6,6 +6,7 @@ body {
   font-weight: 300;
   font-size: 16px;
   line-height: 20px;
+  overflow: hidden;
 }
 
 .light-gray {
@@ -33,26 +34,35 @@ body {
   font-style: normal;
 }
 
+#field {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: -1;
+}
+
 #joystick {
   padding: 0;
 	width: 12em;
   height: 12em;
   left: 1em;
-  top: 2em;
+  top: 5em;
   background-color: rgb(204, 236, 248);
 }
 
-#card2 {
-  width: 28em;
-  height: 16em;
-  left: 14em;
-  top: 2em;
+#heatmap {
+  width: 12em;
+  height: 20em;
+  left: 1em;
+  top: 18em;
 }
 
-#card2 p {
+#heatmap p {
   font-weight: 400;
   font-size: 18px;
-  line-height: 26px;
+  line-height: 24px;
   color: #999;
 }
 
