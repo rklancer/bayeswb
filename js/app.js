@@ -1,10 +1,13 @@
-/*global d3 console touchjoy*/
+/*global d3 console touchjoy $*/
 
 var dt = 1,
     maxSpeed = 0.01,
-    axleTrack = 0.1,
+    axleTrack = 0.01,
+    // distance moved in 1 time step, relative to track
+    characteristicLength = (maxSpeed * dt / axleTrack),
     pose = { x: 0, y: 0, heading: Math.PI/2 },
-    updateTurtle;
+    updateTurtle,
+    formatter = d3.format('1.2f');
 
 function setupTurtle() {
   var svg = d3.select('#field').append('svg')
@@ -73,8 +76,10 @@ function move(left, right, callback) {
       arcAngle,
       dx,
       dy,
-      r,
-      theta;
+      r;
+
+  $('.left-display').text(formatter(left));
+  $('.right-display').text(formatter(right));
 
   if (diff === 0) {
     arcAngle = 0;
@@ -92,8 +97,6 @@ function move(left, right, callback) {
   r = Math.sqrt(dx*dx + dy*dy);
 
   if (arcAngle*arcRadius < 0) r *= -1;
-
-  console.log({r: r, arcAngle: arcAngle});
 
   callback(r, arcAngle/2, arcAngle);
 }
