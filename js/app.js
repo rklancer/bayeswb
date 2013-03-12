@@ -11,24 +11,32 @@ function setupTurtle() {
         .attr('width', '100%')
         .attr('height', '100%'),
 
-      width = svg.style('width'),
-      height = svg.style('height'),
-
-      x = d3.scale.linear()
-        .domain([-1, 1])
-        .range([0, width]),
-
+      width = $(svg.node()).width(),
+      height = $(svg.node()).height(),
       y = d3.scale.linear()
-        .domain([-1, 1])
-        .range([height, 0]),
+            .range([height, 0]),
+      x = d3.scale.linear()
+            .range([0, width]),
+      l = d3.scale.linear()
+            .domain([0,2]);
 
-      turtle = svg.selectAll('circle');
+  if (width > height) {
+    x.domain([-width/height, width/height]);
+    y.domain([-1, 1]);
+    l.range([0, height]);
+  } else {
+    x.domain([-1, 1]);
+    y.domain([-height/width, height/width]);
+    l.range([0, width]);
+  }
+
+  turtle = svg.selectAll('circle');
 
   updateTurtle = function(pose) {
     var selection = turtle.data([pose]);
 
     selection.enter().append('circle')
-      .attr('r', '3px')
+      .attr('r', l(axleTrack))
       .attr('fill', 'rgb(51, 181, 229)');
 
     selection
