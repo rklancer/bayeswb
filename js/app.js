@@ -53,16 +53,47 @@ function setupTurtle() {
 
 // Interpreted from what we did for the Artisans Asylum bot
 function interpretMotorCommand(x, y, callback) {
-  var angle = Math.atan2(y, x) - Math.PI/4,
-      speed = Math.sqrt(x*x + y*y),
-      left  = Math.sin(angle),
-      right = Math.cos(angle),
-      scale = speed / Math.max(Math.abs(left), Math.abs(right));
 
-  if (speed > 1.0) {
-    throw new Error("Joystick input outside the unit circle");
+  // f(x) can be any function that map the slope y/x of first-quadrant joystick position (x, y) to
+  // the resulting radius of the arc that will be traveled by the robot (in units of half the
+  // distance between the wheels, or "track": i.e., f(y/x) = 1 -> radius = axleTrack/2)
+  //
+  // Range [0, Infinity] -> Domain [0, Infinity]
+  function f(x) {
+    return 10*x*x;
   }
-  callback(scale * left, scale * right);
+
+  var speed = Math.sqrt(x*x + y*y),
+      mirrorRight = x*y < 0,
+      mirrorTop = y < 0,
+      left,
+      right,
+      radius,
+      tmp;
+
+  x = Math.abs(x);
+  y = Math.abs(y);
+
+  if (x === 0) {
+    right = left = speed;
+  } else {
+    radius = f(y/x);
+    left = speed;
+    right = left * (radius-1)/(radius+1);
+  }
+
+  if (mirrorRight) {
+    tmp = right;
+    right = left;
+    left = tmp;
+  }
+
+  if (mirrorTop) {
+    left = -left;
+    right = -right;
+  }
+
+  callback(left, right);
 }
 
 function move(left, right, callback) {
