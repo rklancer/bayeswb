@@ -1,8 +1,8 @@
 /*global d3 console touchjoy $*/
 
 var dt = 1,
-    maxSpeed = 0.015,
-    axleTrack = 0.03,
+    maxSpeed = 0.01,
+    axleTrack = 0.1,
     poseTrailLength = 10,
     turtleColor = 'rgb(51, 181, 229)',
 
@@ -66,7 +66,6 @@ function setupTurtle() {
     var selection = svg.selectAll('g.turtle').data(poseTrailData),
         enteringGroup = selection.enter().append('g');
 
-
     enteringGroup
       .attr('class', 'turtle')
       .attr('stroke', turtleColor)
@@ -105,7 +104,7 @@ function interpretMotorCommand(x, y, callback) {
   //
   // Range [0, Infinity] -> Domain [0, Infinity]
   function f(x) {
-    return 10*x*x;
+    return 5*x*x;
   }
 
   var speed = Math.sqrt(x*x + y*y),
