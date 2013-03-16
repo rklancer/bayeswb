@@ -1,14 +1,33 @@
 /*global d3 console touchjoy $*/
 
 var dt = 1,
-    maxSpeed = 0.01,
-    axleTrack = 0.01,
+    maxSpeed = 0.015,
+    axleTrack = 0.03,
+    poseTrailLength = 10,
+    turtleColor = 'rgb(51, 181, 229)',
+
     // distance moved in 1 time step, relative to track
     characteristicLength = (maxSpeed * dt / axleTrack),
+
     pose = { x: 0, y: 0, heading: Math.PI/2 },
+    poseTrailData = [],
+    nPoses = 0,
     updateTurtle,
-    formatter = d3.format('1.2f'),
-    poses=[];
+    formatter = d3.format('1.2f');
+
+
+function pushToPoseTrail(pose) {
+  if (nPoses === 0) poseTrailData.push(pose);
+
+  if (nPoses % 5 > 0) {
+    poseTrailData.pop();
+  }
+  if (poseTrailData.length > poseTrailLength) {
+    poseTrailData.shift();
+  }
+  poseTrailData.push(pose);
+  nPoses++;
+}
 
 function setupTurtle() {
   var svg = d3.select('#field').append('svg')
@@ -22,7 +41,10 @@ function setupTurtle() {
       x = d3.scale.linear()
             .range([0, width]),
       l = d3.scale.linear()
-            .domain([0,2]);
+            .domain([0,2]),
+      poseTrailOpacity = d3.scale.linear()
+        .domain([0, poseTrailLength-1])
+        .range([0.7, 0.1]);
 
   if (width > height) {
     x.domain([-width/height, width/height]);
@@ -35,21 +57,27 @@ function setupTurtle() {
   }
 
   updateTurtle = function(pose) {
-    poses.push(pose);
+    pushToPoseTrail(pose);
 
-    var selection = svg.selectAll('g.turtle').data(poses);
+    var selection = svg.selectAll('g.turtle').data(poseTrailData);
 
     selection.enter().append('g')
       .attr('class', 'turtle')
       .append('circle')
         .attr('r', l(axleTrack))
-        .attr('stroke', 'rgb(51, 181, 229)')
+        .attr('stroke', turtleColor)
         .attr('fill-opacity', 0);
 
     selection
       .select('circle')
+        .attr('stroke-opacity', function(d, i) {
+          if (i === poseTrailData.length - 1) return 1;
+          return poseTrailOpacity(poseTrailData.length - 2 - i);
+        })
         .attr('cx', function (d) { return x(d.x); })
         .attr('cy', function (d) { return y(d.y); });
+
+    selection.exit().remove();
   };
 
   updateTurtle(pose);
@@ -130,7 +158,7 @@ function move(left, right, callback) {
 
   if (arcAngle*arcRadius < 0) r *= -1;
 
-  callback(r, arcAngle/2, arcAngle);
+  callback(r, arcAngle);
 }
 
 setupTurtle();
@@ -140,11 +168,17 @@ touchjoy(100, function(x, y) {
     $('.left-display').text(formatter(left));
     $('.right-display').text(formatter(right));
 
-    move(left, right, function(r, theta, arcAngle) {
-      pose.x += r * Math.cos(pose.heading + theta);
-      pose.y += r * Math.sin(pose.heading + theta);
-      pose.heading += arcAngle;
-      updateTurtle({x: pose.x, y: pose.y});
+    move(left, right, function(r, arcAngle) {
+      var x = pose.x,
+          y = pose.y,
+          heading = pose.heading;
+
+      pose = {
+        x: x + r * Math.cos(heading + arcAngle/2),
+        y: y + r * Math.sin(heading + arcAngle/2),
+        heading: heading + arcAngle
+      };
+      updateTurtle(pose);
     });
   });
 });
