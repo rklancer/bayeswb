@@ -90,14 +90,29 @@ function setupTurtle() {
         .attr('stroke', turtleColor)
         .attr('d', 'm0 0 l' + l(axleTrack/2) + ' 0');
 
+    [-l(axleTrack/2), l(axleTrack/2)].forEach(function(y) {
+      enteringGroup
+        .append('rect')
+        .attr('class', 'wheel')
+        .attr('height', l(axleTrack/10))
+        .attr('width', l(axleTrack/4))
+        .attr('fill-opacity', 1)
+        .attr('fill', turtleColor)
+        .attr('rx', l(axleTrack/40))
+        .attr('ry', l(axleTrack/40))
+        .attr('x', -l(axleTrack/8))
+        .attr('y', y - l(axleTrack/20));
+    });
+
     selection
       .attr('transform', function(d) {
         return 'translate(' + x(d.x) + ',' + y(d.y) + ') rotate(' + degrees(-d.heading) + ')';
       })
-      .attr('stroke-opacity', function(d, i) {
-        if (i === poseTrailData.length - 1) return 1;
+      .filter(function(d) {
+        return d !== pose;
+      }).attr('stroke-opacity', function(d, i) {
         return poseTrailOpacity(poseTrailData.length - 2 - i);
-      });
+      }).selectAll('.wheel').remove();
 
     selection.exit().remove();
   };
