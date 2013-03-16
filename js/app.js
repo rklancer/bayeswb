@@ -20,6 +20,16 @@ function degrees(rad) {
   return rad/Math.PI * 180;
 }
 
+function normalizeAngle(angle) {
+  angle = angle % (2 * Math.PI);
+  if (angle < -Math.PI) {
+    angle += (2 * Math.PI);
+  } else if (angle > Math.PI) {
+    angle -= (2 * Math.PI);
+  }
+  return angle;
+}
+
 function pushToPoseTrail(pose) {
   if (nPoses === 0) poseTrailData.push(pose);
 
@@ -188,7 +198,7 @@ touchjoy(100, function(x, y) {
       pose = {
         x: x + r * Math.cos(heading + arcAngle/2),
         y: y + r * Math.sin(heading + arcAngle/2),
-        heading: heading + arcAngle
+        heading: normalizeAngle(heading + arcAngle)
       };
       updateTurtle(pose);
     });
