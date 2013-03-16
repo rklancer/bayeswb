@@ -3,8 +3,9 @@
 var dt = 1,
     maxSpeed = 0.01,
     axleTrack = 0.1,
-    poseTrailLength = 10,
+    poseTrailLength = 15,
     turtleColor = 'rgb(51, 181, 229)',
+    headingColor = 'red',
 
     // distance moved in 1 time step, relative to track
     characteristicLength = (maxSpeed * dt / axleTrack),
@@ -58,7 +59,7 @@ function setupTurtle() {
             .domain([0,2]),
       poseTrailOpacity = d3.scale.linear()
         .domain([0, poseTrailLength-1])
-        .range([0.3, 0.1]);
+        .range([0.7, 0.1]);
 
   if (width > height) {
     x.domain([-width/height, width/height]);
@@ -80,6 +81,7 @@ function setupTurtle() {
       .attr('class', 'turtle')
       .attr('stroke', turtleColor)
       .append('circle')
+        .attr('class', 'body')
         .attr('r', l(axleTrack/2))
         .attr('fill-opacity', 0)
         .attr('cx', 0)
@@ -87,8 +89,9 @@ function setupTurtle() {
 
     enteringGroup
       .append('path')
-        .attr('stroke', turtleColor)
-        .attr('d', 'm0 0 l' + l(axleTrack/2) + ' 0');
+        .attr('class', 'headingIndicator')
+        .attr('stroke', headingColor)
+        .attr('d', 'm' + l(axleTrack/4) + ' 0 l' + l(axleTrack/4) + ' 0');
 
     [-l(axleTrack/2), l(axleTrack/2)].forEach(function(y) {
       enteringGroup
@@ -112,7 +115,7 @@ function setupTurtle() {
         return d !== pose;
       }).attr('stroke-opacity', function(d, i) {
         return poseTrailOpacity(poseTrailData.length - 2 - i);
-      }).selectAll('.wheel').remove();
+      }).selectAll('.turtle .wheel, .turtle .body').remove();
 
     selection.exit().remove();
   };
