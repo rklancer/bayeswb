@@ -71,7 +71,7 @@ function setupTurtle() {
       .attr('class', 'turtle')
       .attr('stroke', turtleColor)
       .append('circle')
-        .attr('r', l(axleTrack))
+        .attr('r', l(axleTrack/2))
         .attr('fill-opacity', 0)
         .attr('cx', 0)
         .attr('cy', 0);
@@ -79,7 +79,7 @@ function setupTurtle() {
     enteringGroup
       .append('path')
         .attr('stroke', turtleColor)
-        .attr('d', 'm0 0 l' + l(axleTrack) + ' 0');
+        .attr('d', 'm0 0 l' + l(axleTrack/2) + ' 0');
 
     selection
       .attr('transform', function(d) {
