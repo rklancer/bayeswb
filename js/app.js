@@ -66,16 +66,19 @@ function setupTurtle() {
       .append('circle')
         .attr('r', l(axleTrack))
         .attr('stroke', turtleColor)
-        .attr('fill-opacity', 0);
+        .attr('fill-opacity', 0)
+        .attr('cx', 0)
+        .attr('cy', 0);
 
     selection
+      .attr('transform', function(d) {
+        return 'translate(' + x(d.x) + ',' + y(d.y) + ')';
+      })
       .select('circle')
         .attr('stroke-opacity', function(d, i) {
           if (i === poseTrailData.length - 1) return 1;
           return poseTrailOpacity(poseTrailData.length - 2 - i);
-        })
-        .attr('cx', function (d) { return x(d.x); })
-        .attr('cy', function (d) { return y(d.y); });
+        });
 
     selection.exit().remove();
   };
