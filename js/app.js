@@ -7,7 +7,8 @@ var dt = 1,
     characteristicLength = (maxSpeed * dt / axleTrack),
     pose = { x: 0, y: 0, heading: Math.PI/2 },
     updateTurtle,
-    formatter = d3.format('1.2f');
+    formatter = d3.format('1.2f'),
+    poses=[];
 
 function setupTurtle() {
   var svg = d3.select('#field').append('svg')
@@ -34,15 +35,21 @@ function setupTurtle() {
   }
 
   updateTurtle = function(pose) {
-    var selection = svg.selectAll('circle').data([pose]);
+    poses.push(pose);
 
-    selection.enter().append('circle')
-      .attr('r', l(axleTrack))
-      .attr('fill', 'rgb(51, 181, 229)');
+    var selection = svg.selectAll('g.turtle').data(poses);
+
+    selection.enter().append('g')
+      .attr('class', 'turtle')
+      .append('circle')
+        .attr('r', l(axleTrack))
+        .attr('stroke', 'rgb(51, 181, 229)')
+        .attr('fill-opacity', 0);
 
     selection
-      .attr('cx', function (d) { return x(d.x); })
-      .attr('cy', function (d) { return y(d.y); });
+      .select('circle')
+        .attr('cx', function (d) { return x(d.x); })
+        .attr('cy', function (d) { return y(d.y); });
   };
 
   updateTurtle(pose);
