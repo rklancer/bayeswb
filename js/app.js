@@ -33,10 +33,8 @@ function setupTurtle() {
     l.range([0, width]);
   }
 
-  turtle = svg.selectAll('circle');
-
   updateTurtle = function(pose) {
-    var selection = turtle.data([pose]);
+    var selection = svg.selectAll('circle').data([pose]);
 
     selection.enter().append('circle')
       .attr('r', l(axleTrack))
@@ -48,7 +46,6 @@ function setupTurtle() {
   };
 
   updateTurtle(pose);
-  return turtle;
 }
 
 // Interpreted from what we did for the Artisans Asylum bot
@@ -129,7 +126,7 @@ function move(left, right, callback) {
   callback(r, arcAngle/2, arcAngle);
 }
 
-var turtle = setupTurtle();
+setupTurtle();
 
 touchjoy(100, function(x, y) {
   interpretMotorCommand(x, y, function(left, right) {
