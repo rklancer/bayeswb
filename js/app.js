@@ -109,9 +109,6 @@ function move(left, right, callback) {
       dy,
       r;
 
-  $('.left-display').text(formatter(left));
-  $('.right-display').text(formatter(right));
-
   if (diff === 0) {
     arcAngle = 0;
     dx = maxSpeed * (sum / 2);
@@ -136,6 +133,9 @@ var turtle = setupTurtle();
 
 touchjoy(100, function(x, y) {
   interpretMotorCommand(x, y, function(left, right) {
+    $('.left-display').text(formatter(left));
+    $('.right-display').text(formatter(right));
+
     move(left, right, function(r, theta, arcAngle) {
       pose.x += r * Math.cos(pose.heading + theta);
       pose.y += r * Math.sin(pose.heading + theta);
