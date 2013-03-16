@@ -16,6 +16,10 @@ var dt = 1,
     formatter = d3.format('1.2f');
 
 
+function degrees(rad) {
+  return rad/Math.PI * 180;
+}
+
 function pushToPoseTrail(pose) {
   if (nPoses === 0) poseTrailData.push(pose);
 
@@ -59,26 +63,32 @@ function setupTurtle() {
   updateTurtle = function(pose) {
     pushToPoseTrail(pose);
 
-    var selection = svg.selectAll('g.turtle').data(poseTrailData);
+    var selection = svg.selectAll('g.turtle').data(poseTrailData),
+        enteringGroup = selection.enter().append('g');
 
-    selection.enter().append('g')
+
+    enteringGroup
       .attr('class', 'turtle')
+      .attr('stroke', turtleColor)
       .append('circle')
         .attr('r', l(axleTrack))
-        .attr('stroke', turtleColor)
         .attr('fill-opacity', 0)
         .attr('cx', 0)
         .attr('cy', 0);
 
+    enteringGroup
+      .append('path')
+        .attr('stroke', turtleColor)
+        .attr('d', 'm0 0 l' + l(axleTrack) + ' 0');
+
     selection
       .attr('transform', function(d) {
-        return 'translate(' + x(d.x) + ',' + y(d.y) + ')';
+        return 'translate(' + x(d.x) + ',' + y(d.y) + ') rotate(' + degrees(-d.heading) + ')';
       })
-      .select('circle')
-        .attr('stroke-opacity', function(d, i) {
-          if (i === poseTrailData.length - 1) return 1;
-          return poseTrailOpacity(poseTrailData.length - 2 - i);
-        });
+      .attr('stroke-opacity', function(d, i) {
+        if (i === poseTrailData.length - 1) return 1;
+        return poseTrailOpacity(poseTrailData.length - 2 - i);
+      });
 
     selection.exit().remove();
   };
