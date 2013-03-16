@@ -44,7 +44,7 @@ function setupTurtle() {
             .domain([0,2]),
       poseTrailOpacity = d3.scale.linear()
         .domain([0, poseTrailLength-1])
-        .range([0.7, 0.1]);
+        .range([0.3, 0.1]);
 
   if (width > height) {
     x.domain([-width/height, width/height]);
