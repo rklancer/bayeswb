@@ -1,5 +1,4 @@
-/*global d3 console touchjoy $*/
-
+/*global d3, $, touchjoy */
 var dt = 1,
     maxSpeed = 0.01,
     axleTrack = 0.1,
