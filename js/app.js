@@ -139,33 +139,35 @@ function setupPositionHeatmap() {
        .style('top', top)
        .style('height', height),
 
+      scale = d3.scale.linear()
+        .domain([-1.5 * maxSpeed * dt, 1.5 * maxSpeed])
+        .range([0, width]),
+
       heatmap = svg.append('g')
         .attr('class', 'heatmap'),
 
-      scale = d3.scale.linear()
-        .domain([-1.5 * maxSpeed * dt, 1.5 * maxSpeed])
-        .range([0, width]);
+      samplesLayer = heatmap.append('g').attr('class', 'samples'),
 
-    heatmap.append('circle')
-      .attr('class', 'center')
-      .attr('fill', 'red')
-      .attr('cx', scale(0))
-      .attr('cy', scale(0))
-      .attr('r', '3px');
+      centerCircle = heatmap.append('circle')
+        .attr('class', 'center')
+        .attr('fill', 'red')
+        .attr('cx', scale(0))
+        .attr('cy', scale(0))
+        .attr('r', '3px');
 
-    updateHeatmap = function(xs, ys, xRef, yRef) {
-      var selection = heatmap.selectAll('circle.sample').data(xs);
+  updateHeatmap = function(xs, ys, xRef, yRef) {
+    var selection = samplesLayer.selectAll('circle.sample').data(xs);
 
-      selection.enter().append('circle')
-        .attr('class', 'sample')
-        .attr('fill', 'black')
-        .attr('fill-opacity', 0.2)
-        .attr('r', '2px');
+    selection.enter().append('circle')
+      .attr('class', 'sample')
+      .attr('fill', 'black')
+      .attr('fill-opacity', 0.2)
+      .attr('r', '2px');
 
-      selection
-        .attr('cx', function(d, i) { return scale(xs[i] - xRef); })
-        .attr('cy', function(d, i) { return scale(yRef - ys[i]); });
-    };
+    selection
+      .attr('cx', function(d, i) { return scale(xs[i] - xRef); })
+      .attr('cy', function(d, i) { return scale(yRef - ys[i]); });
+  };
 }
 
 // Updated from what we did for the Artisans Asylum bot
