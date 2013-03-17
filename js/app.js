@@ -192,19 +192,9 @@ function velocities(left, right, callback) {
   // (counterclockwise)
 
   var sum = right + left,
-      diff = right - left,
-      translationalVelocity,
-      rotationalVelocity;
+      diff = right - left;
 
-  if (diff === 0) {
-    translationalVelocity = maxSpeed;
-    rotationalVelocity = 0;
-  } else {
-    translationalVelocity = sum * maxSpeed / 2;
-    rotationalVelocity = diff * maxSpeed  / axleTrack;
-  }
-
-  callback(translationalVelocity, rotationalVelocity);
+  callback(sum * maxSpeed / 2, diff * maxSpeed  / axleTrack);
 }
 
 
