@@ -122,6 +122,25 @@ function setupTurtle() {
   updateTurtle(pose);
 }
 
+
+function setupPositionHeatmap() {
+  var card = $('#heatmap'),
+      header = card.find('h1'),
+
+      width = card.outerWidth(),
+      top = header.offset().top - card.offset().top + header.outerHeight(true),
+      height = card.outerHeight() - top,
+
+      svg = d3.select('#heatmap').append('svg')
+       .style('position', 'absolute')
+       .style('left', 0)
+       .style('width', width)
+       .style('top', top)
+       .style('height', height),
+
+      heatmap = svg.append('g');
+}
+
 // Updated from what we did for the Artisans Asylum bot
 function motorInputs(x, y, callback) {
 
@@ -214,6 +233,7 @@ function poseDelta(translationalVelocity, rotationalVelocity, dt, callback) {
 
 $(document).ready(function() {
   setupTurtle();
+  setupPositionHeatmap();
 
   touchjoy(100, function(x, y) {
     motorInputs(x, y, function(left, right) {
