@@ -123,8 +123,8 @@ function setupTurtle() {
   updateTurtle(pose);
 }
 
-// Interpreted from what we did for the Artisans Asylum bot
-function interpretMotorCommand(x, y, callback) {
+// Updated from what we did for the Artisans Asylum bot
+function motorInputs(x, y, callback) {
 
   // f(x) can be any function that map the slope y/x of first-quadrant joystick position (x, y) to
   // the resulting radius of the arc that will be traveled by the robot (in units of half the
@@ -168,28 +168,40 @@ function interpretMotorCommand(x, y, callback) {
   callback(left, right);
 }
 
-function move(left, right, callback) {
+function velocities(left, right, callback) {
   // Radius and angle of arc follows from differential drive geometry
   // Here we assume the center point of the arc is to the left of the robot when driving forward
   // (counterclockwise)
 
   var sum = right + left,
       diff = right - left,
-      arcRadius,
+      translationalVelocity,
+      rotationalVelocity;
+
+  if (diff === 0) {
+    translationalVelocity = maxSpeed;
+    rotationalVelocity = 0;
+  } else {
+    translationalVelocity = sum * maxSpeed / 2;
+    rotationalVelocity = diff * maxSpeed  / axleTrack;
+  }
+
+  callback(translationalVelocity, rotationalVelocity);
+}
+
+function poseDelta(translationalVelocity, rotationalVelocity, dt, callback) {
+  var arcRadius,
       arcAngle,
       dx,
       dy,
       r;
 
-  if (diff === 0) {
-    arcAngle = 0;
-    dx = maxSpeed * (sum / 2);
+  arcAngle = rotationalVelocity * dt;
+  if (rotationalVelocity === 0) {
+    dx = translationalVelocity * dt;
     dy = 0;
-  }
-
-  if (diff !== 0) {
-    arcAngle = diff * maxSpeed * dt / axleTrack;
-    arcRadius = (sum / diff) * 0.5 * axleTrack;
+  } else {
+    arcRadius = translationalVelocity / rotationalVelocity;
     dx = arcRadius * (Math.cos(arcAngle) - 1);
     dy = arcRadius * Math.sin(arcAngle);
   }
@@ -204,21 +216,23 @@ function move(left, right, callback) {
 setupTurtle();
 
 touchjoy(100, function(x, y) {
-  interpretMotorCommand(x, y, function(left, right) {
+  motorInputs(x, y, function(left, right) {
     $('.left-display').text(formatter(left));
     $('.right-display').text(formatter(right));
 
-    move(left, right, function(r, arcAngle) {
-      var x = pose.x,
-          y = pose.y,
-          heading = pose.heading;
+    velocities(left, right, function (translationalVelocity, rotationalVelocity) {
+      poseDelta(translationalVelocity, rotationalVelocity, dt, function (r, theta) {
+        var x = pose.x,
+            y = pose.y,
+            heading = pose.heading;
 
-      pose = {
-        x: x + r * Math.cos(heading + arcAngle/2),
-        y: y + r * Math.sin(heading + arcAngle/2),
-        heading: normalizeAngle(heading + arcAngle)
-      };
-      updateTurtle(pose);
+        pose = {
+          x: x + r * Math.cos(heading + theta/2),
+          y: y + r * Math.sin(heading + theta/2),
+          heading: normalizeAngle(heading + theta)
+        };
+        updateTurtle(pose);
+      });
     });
   });
 });
