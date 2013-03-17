@@ -148,14 +148,19 @@ function setupPositionHeatmap() {
 
       samplesLayer = heatmap.append('g').attr('class', 'samples'),
 
+      cx = scale(0),
+      cy = scale(0),
+
       centerCircle = heatmap.append('circle')
         .attr('class', 'center')
         .attr('fill', 'red')
-        .attr('cx', scale(0))
-        .attr('cy', scale(0))
+        .attr('cx', cx)
+        .attr('cy', cy)
         .attr('r', '3px');
 
-  updateHeatmap = function(xs, ys, xRef, yRef) {
+  updateHeatmap = function(xs, ys, xRef, yRef, headingRef) {
+    headingRef = degrees(headingRef) - 90;
+
     var selection = samplesLayer.selectAll('circle.sample').data(xs);
 
     selection.enter().append('circle')
@@ -165,8 +170,9 @@ function setupPositionHeatmap() {
       .attr('r', '1px');
 
     selection
-      .attr('cx', function(d, i) { return scale(xs[i] - xRef); })
-      .attr('cy', function(d, i) { return scale(yRef - ys[i]); });
+      .attr('transform', function (d, i) {
+        return 'rotate(' + headingRef + ' ' + cx + ' ' + cy + ') translate(' + scale(xs[i] - xRef) + ', ' + scale(yRef - ys[i]) +')';
+      });
   };
 }
 
@@ -238,7 +244,7 @@ $(document).ready(function() {
 
       velocities(left, right, function (v, omega) {
         var samples = model.updateMotionModelSamples(pose.x, pose.y, pose.heading, v, omega, dt);
-        updateHeatmap(samples.x, samples.y, pose.x, pose.y);
+        updateHeatmap(samples.x, samples.y, pose.x, pose.y, pose.heading);
 
         // model.updatePose(pose.x, pose.y, pose.heading, v, omega, 0, dt, 0, function(x, y, heading) {
         pose = {
