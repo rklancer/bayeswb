@@ -6,13 +6,16 @@ robotModel = function() {
       y = new Float32Array(N),
       heading = new Float32Array(N),
 
+      maxV = 0.01,
+      maxOmega = 0.2,
+
       // motion sampler parameters
-      alpha1 = 0,
-      alpha2 = 0,
-      alpha3 = 0,
-      alpha4 = 0,
-      alpha5 = 0,
-      alpha6 = 0;
+      alpha1 = Math.pow(0.002/maxV, 2),
+      alpha2 = Math.pow(0.001/maxOmega, 2),
+      alpha3 = Math.pow(0.2/maxV, 2),
+      alpha4 = Math.pow(1/maxOmega, 2),
+      alpha5 = alpha3,
+      alpha6 = alpha4;
 
   function updatePose(xInitial, yInitial, theta, v, omega, gamma, dt, i, callback) {
     var x,
