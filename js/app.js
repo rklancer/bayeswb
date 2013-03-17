@@ -240,15 +240,15 @@ $(document).ready(function() {
         var samples = model.updateMotionModelSamples(pose.x, pose.y, pose.heading, v, omega, dt);
         updateHeatmap(samples.x, samples.y, pose.x, pose.y);
 
-        model.updatePose(pose.x, pose.y, pose.heading, v, omega, 0, dt, 0, function(x, y, heading) {
-          pose = {
-            x: x,
-            y: y,
-            heading: normalizeAngle(heading)
-          };
+        // model.updatePose(pose.x, pose.y, pose.heading, v, omega, 0, dt, 0, function(x, y, heading) {
+        pose = {
+          x: samples.x[0],
+          y: samples.y[0],
+          heading: normalizeAngle(samples.heading[0])
+        };
 
-          updateTurtle(pose);
-        });
+        updateTurtle(pose);
+        // });
       });
     });
   });

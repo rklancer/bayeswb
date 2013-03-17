@@ -10,12 +10,24 @@ robotModel = function() {
       maxOmega = 0.2,
 
       // motion sampler parameters
-      alpha1 = Math.pow(0.002/maxV, 2),
+
+      // dependence of V on V
+      alpha1 = Math.pow(0.001/maxV, 2),
+
+      // dependence of V on omega
       alpha2 = Math.pow(0.001/maxOmega, 2),
-      alpha3 = Math.pow(0.2/maxV, 2),
-      alpha4 = Math.pow(1/maxOmega, 2),
-      alpha5 = alpha3,
-      alpha6 = alpha4;
+
+      // dependence of omega on V
+      alpha3 = Math.pow(0.05/maxV, 2),
+
+      // dependence of omega on omega
+      alpha4 = Math.pow(0.05/maxOmega, 2),
+
+      // dependence of gamma (additional rotational velocity applied to heading but not x, y) on V
+      alpha5 = 0.5 * alpha3,
+
+      // dependence of gamma on omega
+      alpha6 = 0.5 * alpha4;
 
   function updatePose(xInitial, yInitial, theta, v, omega, gamma, dt, i, callback) {
     var x,
