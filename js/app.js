@@ -13,6 +13,7 @@ var dt = 1,
     poseTrailData = [],
     nPoses = 0,
     updateTurtle,
+    updateHeatmap,
     formatter = d3.format('1.2f');
 
 
@@ -122,7 +123,7 @@ function setupTurtle() {
   updateTurtle(pose);
 }
 
-
+// Not really a heatmap yet, just a scatter display
 function setupPositionHeatmap() {
   var card = $('#heatmap'),
       header = card.find('h1'),
@@ -138,7 +139,33 @@ function setupPositionHeatmap() {
        .style('top', top)
        .style('height', height),
 
-      heatmap = svg.append('g');
+      heatmap = svg.append('g')
+        .attr('class', 'heatmap'),
+
+      scale = d3.scale.linear()
+        .domain([-1.5 * maxSpeed * dt, 1.5 * maxSpeed])
+        .range([0, width]);
+
+    heatmap.append('circle')
+      .attr('class', 'center')
+      .attr('fill', 'red')
+      .attr('cx', scale(0))
+      .attr('cy', scale(0))
+      .attr('r', '3px');
+
+    updateHeatmap = function(xs, ys) {
+      var selection = heatmap.selectAll('circle.sample').data(xs);
+
+      selection.enter().append('circle')
+        .attr('class', 'sample')
+        .attr('fill', 'black')
+        .attr('fill-opacity', 0.2)
+        .attr('r', '2px');
+
+      selection
+        .attr('cx', function(d, i) { return scale(xs[i]); })
+        .attr('cy', function(d, i) { return scale(-ys[i]); });
+    };
 }
 
 // Updated from what we did for the Artisans Asylum bot
@@ -209,6 +236,7 @@ $(document).ready(function() {
 
       velocities(left, right, function (v, omega) {
         model.updatePose(pose.x, pose.y, pose.heading, v, omega, 0, dt, 0, function(x, y, heading) {
+          updateHeatmap([x - pose.x], [y - pose.y]);
           pose = {
             x: x,
             y: y,
