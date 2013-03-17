@@ -162,7 +162,7 @@ function setupPositionHeatmap() {
       .attr('class', 'sample')
       .attr('fill', 'black')
       .attr('fill-opacity', 0.2)
-      .attr('r', '2px');
+      .attr('r', '1px');
 
     selection
       .attr('cx', function(d, i) { return scale(xs[i] - xRef); })
