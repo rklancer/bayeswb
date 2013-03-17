@@ -1,4 +1,4 @@
-/*global d3, $, touchjoy */
+/*global d3, $, touchjoy, robotModel */
 var dt = 1,
     maxSpeed = 0.01,
     axleTrack = 0.1,
@@ -207,48 +207,24 @@ function velocities(left, right, callback) {
   callback(translationalVelocity, rotationalVelocity);
 }
 
-function poseDelta(translationalVelocity, rotationalVelocity, dt, callback) {
-  var arcRadius,
-      arcAngle,
-      dx,
-      dy,
-      r;
-
-  arcAngle = rotationalVelocity * dt;
-  if (rotationalVelocity === 0) {
-    dx = translationalVelocity * dt;
-    dy = 0;
-  } else {
-    arcRadius = translationalVelocity / rotationalVelocity;
-    dx = arcRadius * (Math.cos(arcAngle) - 1);
-    dy = arcRadius * Math.sin(arcAngle);
-  }
-
-  r = Math.sqrt(dx*dx + dy*dy);
-
-  if (arcAngle*arcRadius < 0) r *= -1;
-
-  callback(r, arcAngle);
-}
 
 $(document).ready(function() {
+  var model = robotModel();
+
   setupTurtle();
   setupPositionHeatmap();
 
   touchjoy(100, function(x, y) {
     motorInputs(x, y, function(left, right) {
 
-      velocities(left, right, function (translationalVelocity, rotationalVelocity) {
-        poseDelta(translationalVelocity, rotationalVelocity, dt, function (r, theta) {
-          var x = pose.x,
-              y = pose.y,
-              heading = pose.heading;
-
+      velocities(left, right, function (v, omega) {
+        model.updatePose(pose.x, pose.y, pose.heading, v, omega, 0, dt, 0, function(x, y, heading) {
           pose = {
-            x: x + r * Math.cos(heading + theta/2),
-            y: y + r * Math.sin(heading + theta/2),
-            heading: normalizeAngle(heading + theta)
+            x: x,
+            y: y,
+            heading: normalizeAngle(heading)
           };
+
           updateTurtle(pose);
         });
       });
