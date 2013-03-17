@@ -49,8 +49,8 @@ function setupTurtle() {
         .attr('width', '100%')
         .attr('height', '100%'),
 
-      width = $(svg.node()).width(),
-      height = $(svg.node()).height(),
+      width = $('#field').width(),
+      height = $('#field').height(),
       y = d3.scale.linear()
             .range([height, 0]),
       x = d3.scale.linear()
