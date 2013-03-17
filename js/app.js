@@ -213,25 +213,27 @@ function poseDelta(translationalVelocity, rotationalVelocity, dt, callback) {
   callback(r, arcAngle);
 }
 
-setupTurtle();
+$(document).ready(function() {
+  setupTurtle();
 
-touchjoy(100, function(x, y) {
-  motorInputs(x, y, function(left, right) {
-    $('.left-display').text(formatter(left));
-    $('.right-display').text(formatter(right));
+  touchjoy(100, function(x, y) {
+    motorInputs(x, y, function(left, right) {
+      $('.left-display').text(formatter(left));
+      $('.right-display').text(formatter(right));
 
-    velocities(left, right, function (translationalVelocity, rotationalVelocity) {
-      poseDelta(translationalVelocity, rotationalVelocity, dt, function (r, theta) {
-        var x = pose.x,
-            y = pose.y,
-            heading = pose.heading;
+      velocities(left, right, function (translationalVelocity, rotationalVelocity) {
+        poseDelta(translationalVelocity, rotationalVelocity, dt, function (r, theta) {
+          var x = pose.x,
+              y = pose.y,
+              heading = pose.heading;
 
-        pose = {
-          x: x + r * Math.cos(heading + theta/2),
-          y: y + r * Math.sin(heading + theta/2),
-          heading: normalizeAngle(heading + theta)
-        };
-        updateTurtle(pose);
+          pose = {
+            x: x + r * Math.cos(heading + theta/2),
+            y: y + r * Math.sin(heading + theta/2),
+            heading: normalizeAngle(heading + theta)
+          };
+          updateTurtle(pose);
+        });
       });
     });
   });
