@@ -1,7 +1,7 @@
 /*global d3, robotModel:true*/
 
 robotModel = function() {
-  var N = 1,
+  var N = 100,
       x = new Float32Array(N),
       y = new Float32Array(N),
       heading = new Float32Array(N),
@@ -52,7 +52,7 @@ robotModel = function() {
 
   // Generate N samples of motion using velocity-model sampler
   // See Thrun, Burgard and Fox, Probabilistic Robotics, Chapter 5.
-  function updateMotionModelSamples(v, omega, xInitial, yInitial, theta, dt) {
+  function updateMotionModelSamples(xInitial, yInitial, theta, v, omega, dt) {
     var vSq = v*v,
         omegaSq = omega*omega,
 

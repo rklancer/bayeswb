@@ -153,7 +153,7 @@ function setupPositionHeatmap() {
       .attr('cy', scale(0))
       .attr('r', '3px');
 
-    updateHeatmap = function(xs, ys) {
+    updateHeatmap = function(xs, ys, xRef, yRef) {
       var selection = heatmap.selectAll('circle.sample').data(xs);
 
       selection.enter().append('circle')
@@ -163,8 +163,8 @@ function setupPositionHeatmap() {
         .attr('r', '2px');
 
       selection
-        .attr('cx', function(d, i) { return scale(xs[i]); })
-        .attr('cy', function(d, i) { return scale(-ys[i]); });
+        .attr('cx', function(d, i) { return scale(xs[i] - xRef); })
+        .attr('cy', function(d, i) { return scale(yRef - ys[i]); });
     };
 }
 
@@ -235,8 +235,10 @@ $(document).ready(function() {
     motorInputs(x, y, function(left, right) {
 
       velocities(left, right, function (v, omega) {
+        var samples = model.updateMotionModelSamples(pose.x, pose.y, pose.heading, v, omega, dt);
+        updateHeatmap(samples.x, samples.y, pose.x, pose.y);
+
         model.updatePose(pose.x, pose.y, pose.heading, v, omega, 0, dt, 0, function(x, y, heading) {
-          updateHeatmap([x - pose.x], [y - pose.y]);
           pose = {
             x: x,
             y: y,
