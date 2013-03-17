@@ -54,11 +54,11 @@ robotModel = function() {
   // See Thrun, Burgard and Fox, Probabilistic Robotics, Chapter 5.
   function updateMotionModelSamples(v, omega, xInitial, yInitial, theta, dt) {
     var vSq = v*v,
-        omagaSq = omega*omega,
+        omegaSq = omega*omega,
 
-        vSampler = d3.random.normal(v, Math.sqrt(alpha1*vSq + alpha2*omagaSq)),
-        omegaSampler = d3.random.normal(omega, Math.sqrt(alpha3*vSq + alpha4*omagaSq)),
-        gammaSampler = d3.random.normal(0, Math.sqrt(alpha5*vSq + alpha6*omagaSq)),
+        vSampler = d3.random.normal(v, Math.sqrt(alpha1*vSq + alpha2*omegaSq)),
+        omegaSampler = d3.random.normal(omega, Math.sqrt(alpha3*vSq + alpha4*omegaSq)),
+        gammaSampler = d3.random.normal(0, Math.sqrt(alpha5*vSq + alpha6*omegaSq)),
 
         i;
 
