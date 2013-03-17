@@ -135,9 +135,9 @@ function setupPositionHeatmap() {
       svg = d3.select('#heatmap').append('svg')
        .style('position', 'absolute')
        .style('left', 0)
-       .style('width', width)
+       .attr('width', width)
        .style('top', top)
-       .style('height', height),
+       .attr('height', height),
 
       scale = d3.scale.linear()
         .domain([-1.5 * maxSpeed * dt, 1.5 * maxSpeed])
