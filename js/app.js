@@ -217,8 +217,6 @@ $(document).ready(function() {
 
   touchjoy(100, function(x, y) {
     motorInputs(x, y, function(left, right) {
-      $('.left-display').text(formatter(left));
-      $('.right-display').text(formatter(right));
 
       velocities(left, right, function (translationalVelocity, rotationalVelocity) {
         poseDelta(translationalVelocity, rotationalVelocity, dt, function (r, theta) {
