@@ -139,30 +139,29 @@ function setupPositionHeatmap() {
        .style('top', top)
        .attr('height', height),
 
-      x = d3.scale.linear()
-        .domain([-1.5 * maxSpeed * dt, 1.5 * maxSpeed * dt])
-        .range([-width/2, width/2]),
-
-      y = d3.scale.linear()
-        .domain(x.domain())
-        .range([width/2, -width/2]),
+      scale = d3.scale.linear()
+        .domain([-1.5 * maxSpeed * dt, 1.5 * maxSpeed])
+        .range([0, width]),
 
       heatmap = svg.append('g')
-        .attr('transform', 'translate(' + width/2 + ', ' + width/2 +')')
         .attr('class', 'heatmap'),
 
       samplesLayer = heatmap.append('g').attr('class', 'samples'),
 
+      cx = scale(0),
+      cy = scale(0),
+
       centerCircle = heatmap.append('circle')
         .attr('class', 'center')
         .attr('fill', 'red')
-        .attr('cx', 0)
-        .attr('cy', 0)
+        .attr('cx', cx)
+        .attr('cy', cy)
         .attr('r', '3px');
 
   updateHeatmap = function(xs, ys, xRef, yRef, headingRef) {
-    var selection = samplesLayer.selectAll('circle.sample').data(xs),
-        rotationTransform = 'rotate(' + (degrees(headingRef) - 90) + ')';
+    headingRef = degrees(headingRef) - 90;
+
+    var selection = samplesLayer.selectAll('circle.sample').data(xs);
 
     selection.enter().append('circle')
       .attr('class', 'sample')
@@ -171,9 +170,9 @@ function setupPositionHeatmap() {
       .attr('r', '1px');
 
     selection
-      .attr('cx', function(d, i) { return x(xs[i] - xRef); })
-      .attr('cy', function(d, i) { return y(ys[i] - yRef); })
-      .attr('transform', rotationTransform);
+      .attr('transform', function (d, i) {
+        return 'rotate(' + headingRef + ' ' + cx + ' ' + cy + ') translate(' + scale(xs[i] - xRef) + ', ' + scale(yRef - ys[i]) +')';
+      });
   };
 }
 
