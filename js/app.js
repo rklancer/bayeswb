@@ -139,7 +139,7 @@ function setupMotionModelDisplay() {
        .attr('height', height),
 
       scale = d3.scale.linear()
-        .domain([-1.5 * maxSpeed * dt, 1.5 * maxSpeed])
+        .domain([-1.5 * maxSpeed * dt, 1.5 * maxSpeed * dt])
         .range([0, width]),
 
       // PERFORMANCE NOTE
@@ -162,22 +162,52 @@ function setupMotionModelDisplay() {
         .attr('fill', 'red')
         .attr('cx', cx)
         .attr('cy', cy)
-        .attr('r', '3px');
+        .attr('r', '3px'),
 
-  updateMotionModelDisplay = function(xs, ys, xRef, yRef, headingRef) {
+      centerTick = motionModelDisplay.append('line')
+        .attr('class', 'center')
+        .attr('stroke', 'red')
+        .attr('stroke-opacity', 1)
+        .attr('stroke-width', '1px')
+        .attr('x1', scale(1.3 * maxSpeed * dt))
+        .attr('y1', cy)
+        .attr('x2', scale(1.5 * maxSpeed * dt))
+        .attr('y2', cy)
+        .attr('transform', function (d) {
+           return 'rotate(-90 ' + cx + ' ' + cy + ')';
+        });
+
+
+  updateMotionModelDisplay = function(xs, ys, headings, xRef, yRef, headingRef) {
     headingRef = degrees(headingRef) - 90;
 
-    var selection = samplesLayer.selectAll('circle.sample').data(xs);
+    var points = samplesLayer.selectAll('circle.sample').data(xs),
+        ticks = samplesLayer.selectAll('line.sample').data(headings);
 
-    selection.enter().append('circle')
+    points.enter().append('circle')
       .attr('class', 'sample')
       .attr('fill', 'black')
       .attr('fill-opacity', 0.2)
       .attr('r', '1px');
 
-    selection
+    points
       .attr('transform', function (d, i) {
         return 'rotate(' + headingRef + ' ' + cx + ' ' + cy + ') translate(' + scale(xs[i] - xRef) + ', ' + scale(yRef - ys[i]) +')';
+      });
+
+    ticks.enter().append('line')
+      .attr('class', 'sample')
+      .attr('stroke', turtleColor)
+      .attr('stroke-opacity', 0.05)
+      .attr('stroke-width', '1px')
+      .attr('x1', scale(1.35 * maxSpeed * dt))
+      .attr('y1', cy)
+      .attr('x2', scale(1.45 * maxSpeed * dt))
+      .attr('y2', cy);
+
+    ticks
+      .attr('transform', function (d) {
+        return 'rotate(' + (headingRef - degrees(d)) + ' ' + cx + ' ' + cy + ')';
       });
   };
 }
@@ -258,7 +288,7 @@ $(document).ready(function() {
 
       velocities(left, right, function (v, omega) {
         var samples = model.updateMotionModelSamples(pose.x, pose.y, pose.heading, v, omega, dt);
-        updateMotionModelDisplay(samples.x, samples.y, pose.x, pose.y, pose.heading);
+        updateMotionModelDisplay(samples.x, samples.y, samples.heading, pose.x, pose.y, pose.heading);
 
         // model.updatePose(pose.x, pose.y, pose.heading, v, omega, 0, dt, 0, function(x, y, heading) {
         pose = {
