@@ -240,6 +240,14 @@ $(document).ready(function() {
   setupPositionHeatmap();
 
   touchjoy(100, function(x, y) {
+
+    // TODO.
+    // 1. Create "forward" stochastic motion model (model as a stochastic process with some
+    //    autocorrelation and occasional discrete "bumps" or "slips") that is decoupled from the
+    //    statistical motion model that will be used for localization.)
+    // 2. Accept joystick input *less* frequently but animate the turtle smoothly (30 or 60fps)
+    //    between successive inputs.
+
     motorInputs(x, y, function(left, right) {
 
       velocities(left, right, function (v, omega) {
