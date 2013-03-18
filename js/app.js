@@ -143,6 +143,13 @@ function setupPositionHeatmap() {
         .domain([-1.5 * maxSpeed * dt, 1.5 * maxSpeed])
         .range([0, width]),
 
+      // PERFORMANCE NOTE
+      // The "obvious" thing to do here is apply a translation to heatmap, instead of to each
+      // circle. However, the combination of a translation on g.heatmap + a rotation on each
+      // circle.sample slows down Firefox badly. See reverted commit 8d14c753. Either transform
+      // without the other is ok, and applying the both transforms to the individual circle.samples
+      // (as we do here) is ok.
+
       heatmap = svg.append('g')
         .attr('class', 'heatmap'),
 
