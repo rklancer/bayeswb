@@ -45,18 +45,37 @@ body {
 
 #joystick {
   padding: 0;
-	width: 12em;
-  height: 12em;
+	width: 16em;
+  height: 16em;
   left: 1em;
   top: 5em;
   background-color: rgb(204, 236, 248);
 }
 
+#joystick .background {
+  width: 13.6em;
+  left: 1.2em;
+  margin-top: 1.2em;
+  position: relative;
+  background-color: white;
+  border: 1px solid rgba(51, 181, 229, 0.5);
+}
+
+#joystick .knob {
+  position: absolute;
+  width: 20%;
+  top: 50%;
+  left: 50%;
+  margin-top: -10%;
+  margin-left: -10%;
+  background: rgb(51, 181, 229);
+}
+
 #heatmap {
-  width: 12em;
-  height: 20em;
+  width: 16em;
+  height: 22em;
   left: 1em;
-  top: 18em;
+  top: 22em;
 }
 
 #heatmap p {
@@ -66,21 +85,3 @@ body {
   color: #999;
 }
 
-.background {
-  width: 9.6em;
-  left: 1.2em;
-  margin-top: 1.2em;
-  position: relative;
-  background-color: white;
-  border: 1px solid rgba(51, 181, 229, 0.5);
-}
-
-.knob {
-  position: absolute;
-  width: 20%;
-  top: 50%;
-  left: 50%;
-  margin-top: -10%;
-  margin-left: -10%;
-  background: rgb(51, 181, 229);
-}
