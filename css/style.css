@@ -71,14 +71,14 @@ body {
   background: rgb(51, 181, 229);
 }
 
-#heatmap {
+#motion-model-display {
   width: 16em;
   height: 22em;
   left: 1em;
   top: 22em;
 }
 
-#heatmap p {
+#motion-model-display p {
   font-weight: 400;
   font-size: 18px;
   line-height: 24px;

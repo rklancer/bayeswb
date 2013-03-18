@@ -13,7 +13,7 @@ var dt = 1,
     poseTrailData = [],
     nPoses = 0,
     updateTurtle,
-    updateHeatmap,
+    updateMotionModelDisplay,
     formatter = d3.format('1.2f');
 
 
@@ -123,16 +123,15 @@ function setupTurtle() {
   updateTurtle(pose);
 }
 
-// Not really a heatmap yet, just a scatter display
-function setupPositionHeatmap() {
-  var card = $('#heatmap'),
+function setupMotionModelDisplay() {
+  var card = $('#motion-model-display'),
       header = card.find('h1'),
 
       width = card.outerWidth(),
       top = header.offset().top - card.offset().top + header.outerHeight(true),
       height = card.outerHeight() - top,
 
-      svg = d3.select('#heatmap').append('svg')
+      svg = d3.select('#motion-model-display').append('svg')
        .style('position', 'absolute')
        .style('left', 0)
        .attr('width', width)
@@ -144,28 +143,28 @@ function setupPositionHeatmap() {
         .range([0, width]),
 
       // PERFORMANCE NOTE
-      // The "obvious" thing to do here is apply a translation to heatmap, instead of to each
-      // circle. However, the combination of a translation on g.heatmap + a rotation on each
+      // The "obvious" thing to do here is apply a translation to motionModelDisplay, instead of to each
+      // circle. However, the combination of a translation on g.motionModelDisplay + a rotation on each
       // circle.sample slows down Firefox badly. See reverted commit 8d14c753. Either transform
       // without the other is ok, and applying the both transforms to the individual circle.samples
       // (as we do here) is ok.
 
-      heatmap = svg.append('g')
-        .attr('class', 'heatmap'),
+      motionModelDisplay = svg.append('g')
+        .attr('class', 'motion-model-display'),
 
-      samplesLayer = heatmap.append('g').attr('class', 'samples'),
+      samplesLayer = motionModelDisplay.append('g').attr('class', 'samples'),
 
       cx = scale(0),
       cy = scale(0),
 
-      centerCircle = heatmap.append('circle')
+      centerCircle = motionModelDisplay.append('circle')
         .attr('class', 'center')
         .attr('fill', 'red')
         .attr('cx', cx)
         .attr('cy', cy)
         .attr('r', '3px');
 
-  updateHeatmap = function(xs, ys, xRef, yRef, headingRef) {
+  updateMotionModelDisplay = function(xs, ys, xRef, yRef, headingRef) {
     headingRef = degrees(headingRef) - 90;
 
     var selection = samplesLayer.selectAll('circle.sample').data(xs);
@@ -244,7 +243,7 @@ $(document).ready(function() {
   var model = robotModel();
 
   setupTurtle();
-  setupPositionHeatmap();
+  setupMotionModelDisplay();
 
   touchjoy(100, function(x, y) {
 
@@ -259,7 +258,7 @@ $(document).ready(function() {
 
       velocities(left, right, function (v, omega) {
         var samples = model.updateMotionModelSamples(pose.x, pose.y, pose.heading, v, omega, dt);
-        updateHeatmap(samples.x, samples.y, pose.x, pose.y, pose.heading);
+        updateMotionModelDisplay(samples.x, samples.y, pose.x, pose.y, pose.heading);
 
         // model.updatePose(pose.x, pose.y, pose.heading, v, omega, 0, dt, 0, function(x, y, heading) {
         pose = {
