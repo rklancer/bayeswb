@@ -1,7 +1,7 @@
 /*global d3, robotModel:true*/
 
 robotModel = function() {
-  var N = 1000,
+  var N = 100,
       x = new Float32Array(N),
       y = new Float32Array(N),
       heading = new Float32Array(N),

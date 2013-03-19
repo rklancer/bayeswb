@@ -168,7 +168,7 @@ function setupMotionModelDisplay() {
         .attr('class', 'center')
         .attr('stroke', 'red')
         .attr('stroke-opacity', 1)
-        .attr('stroke-width', '1px')
+        .attr('stroke-width', '2px')
         .attr('x1', scale(1.3 * maxSpeed * dt))
         .attr('y1', cy)
         .attr('x2', scale(1.5 * maxSpeed * dt))
@@ -187,7 +187,7 @@ function setupMotionModelDisplay() {
     points.enter().append('circle')
       .attr('class', 'sample')
       .attr('fill', 'black')
-      .attr('fill-opacity', 0.2)
+      .attr('fill-opacity', 0.5)
       .attr('r', '1px');
 
     points
@@ -198,7 +198,7 @@ function setupMotionModelDisplay() {
     ticks.enter().append('line')
       .attr('class', 'sample')
       .attr('stroke', turtleColor)
-      .attr('stroke-opacity', 0.05)
+      .attr('stroke-opacity', 0.2)
       .attr('stroke-width', '1px')
       .attr('x1', scale(1.35 * maxSpeed * dt))
       .attr('y1', cy)
