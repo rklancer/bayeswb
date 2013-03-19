@@ -239,9 +239,11 @@ function addMotionCard(v, omega) {
         .attr('height', height),
 
       spacePerCard = 4.5 * emsize,
-      sign = v > 0 ? 1 : -1;
+      sign = v > 0 ? 1 : -1,
+      omegaSign = omega > 0 ? 1 : -1;
 
   v = Math.abs(v);
+  omega = Math.abs(omega);
 
   card.css('left', spacePerCard * (nMotionCards++));
 
@@ -259,7 +261,17 @@ function addMotionCard(v, omega) {
       // extra width of arrow head (on either side)
       c = 0.06,
       // length of arrow head
-      d = 0.2;
+      d = 0.2,
+
+      // inner diameter of arc
+      id = 0.7,
+
+      // exaggeration of omega (amount to multiply by to get angle of arc display)
+      exaggeration = 3;
+
+  // ~degrees of arc taken up by full-length arrowhead
+  var thetaArrow = d / (id + a/2),
+      arcAngle = Math.max(0, exaggeration * omega - thetaArrow);
 
   svg.append('path')
     .attr('d', 'M' + x(0) + ' ' + y(0) + ' ' +
@@ -273,6 +285,33 @@ function addMotionCard(v, omega) {
     .attr('transform', 'translate(' + x(0.15) + ' ' + ((-b-0.1) * height) + ') ' +
                        'rotate(' + (sign * 90 - 90) + ' ' + x(a/2) + ' ' + height +')');
 
+  var arcPath = d3.svg.arc()({
+        startAngle: 0,
+        endAngle: arcAngle,
+        innerRadius: x(id),
+        outerRadius: x(id + a)
+      }),
+      arc = svg.append('g');
+
+  arc.append('path')
+    .attr('d', arcPath)
+    .attr('fill', purpleAccentColor)
+    .attr('transform', 'translate(' + x(0.5) + ' ' + height + ')');
+
+  arc.append('path')
+     .attr('d', 'M' + x(-a/2) + ' ' + y(0) + ' ' +
+               'L' + x(-c-a/2) + ' ' + y(0) + ' ' +
+               'L' + x(0) + ' ' + y(Math.min(exaggeration*omega*(id+a/2), d)) + ' ' +
+               'L' + x(a/2+c) + ' ' + y(0) + ' ')
+    .attr('fill', purpleAccentColor)
+    .attr('transform',
+                       'translate(' + x(0.5 + (id + a/2)*Math.sin(arcAngle)) + ' ' + (-y(1 - (id + a/2)*Math.cos(arcAngle))) + ')' +
+                       'rotate(' + (90 + degrees(exaggeration * omega)) + ' ' + x(0) + ' ' + y(0) +   ')');
+
+  if (omegaSign > 0) {
+    arc.attr('transform', 'translate(' + x(1) + ' 0)' +
+                          'scale(-1 1)');
+  }
 
   motionCards.push(svg);
 }
