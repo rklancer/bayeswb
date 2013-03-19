@@ -3,8 +3,12 @@ var dt = 1,
     maxSpeed = 0.01,
     axleTrack = 0.1,
     poseTrailLength = 15,
-    turtleColor = 'rgb(51, 181, 229)',
-    headingColor = 'red',
+    blueThemeColor = 'rgb(51, 181, 229)',
+    purpleAccentColor = 'rgb(170, 102, 204)',
+    redAccentColor = 'rgb(255, 68, 58)',
+
+    turtleColor = blueThemeColor,
+    headingColor = redAccentColor,
 
     // distance moved in 1 time step, relative to track
     characteristicLength = (maxSpeed * dt / axleTrack),
@@ -160,14 +164,14 @@ function setupMotionModelDisplay() {
 
       centerCircle = motionModelDisplay.append('circle')
         .attr('class', 'center')
-        .attr('fill', 'red')
+        .attr('fill', redAccentColor)
         .attr('cx', cx)
         .attr('cy', cy)
         .attr('r', '3px'),
 
       centerTick = motionModelDisplay.append('line')
         .attr('class', 'center')
-        .attr('stroke', 'red')
+        .attr('stroke', redAccentColor)
         .attr('stroke-opacity', 1)
         .attr('stroke-width', '2px')
         .attr('x1', scale(1.3 * maxSpeed * dt))
