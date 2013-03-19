@@ -14,8 +14,9 @@ var dt = 1,
     nPoses = 0,
     updateTurtle,
     updateMotionModelDisplay,
-    formatter = d3.format('1.2f');
-
+    formatter = d3.format('1.2f'),
+    motionCards = [],
+    nMotionCards = 0;
 
 function degrees(rad) {
   return rad/Math.PI * 180;
@@ -212,6 +213,54 @@ function setupMotionModelDisplay() {
   };
 }
 
+function addMotionCard(v, omega) {
+  var emsize = parseInt($('body').css('font-size'), 10),
+
+      card = $('<div class="card"></div>')
+        .appendTo('#data-cards'),
+
+      height = card.outerHeight(),
+      width = card.outerWidth(),
+      x = d3.scale.linear()
+        .domain([0, 1])
+        .range([0, width]),
+      y = d3.scale.linear()
+        .domain([0, 1])
+        .range([height, 0]),
+      svg = d3.select(card[0]).append('svg')
+        .style('position', 'absolute')
+        .style('left', 0)
+        .attr('width', width)
+        .style('top', 0)
+        .attr('height', height),
+
+      spacePerCard = 4.5 * emsize,
+      sign = v > 0 ? 1 : -1;
+
+  v = Math.abs(v);
+
+  card.css('left', spacePerCard * (nMotionCards++));
+
+  if (card.offset().left + width > $('body').width()) {
+    $('#data-cards').css('left', parseInt($('#data-cards').css('left'), 10) - spacePerCard);
+    motionCards.shift();
+    $('#data-cards .card').first().remove();
+  }
+
+  var a = 0.2,
+      b = 0.7;
+
+  svg.append('path')
+    .attr('d', 'M' + x(0) + ' ' + y(0) + ' ' +
+               'L' + x(0) + ' ' + y(b * v/maxSpeed) + ' ' +
+               'L' + x(a) + ' ' + y(b * v/maxSpeed) + ' ' +
+               'L' + x(a) + ' ' + y(0) +'z')
+    .attr('fill', turtleColor)
+    .attr('transform', 'translate(' + x(0.2) + ', ' + (-0.1 * height) + ')');
+
+  motionCards.push(svg);
+}
+
 // Updated from what we did for the Artisans Asylum bot
 function motorInputs(x, y, callback) {
 
@@ -275,6 +324,8 @@ $(document).ready(function() {
   setupTurtle();
   setupMotionModelDisplay();
 
+  //addMotionCard(0.7 * maxSpeed, 0.1);
+
   touchjoy(100, function(x, y) {
 
     // TODO.
@@ -287,6 +338,7 @@ $(document).ready(function() {
     motorInputs(x, y, function(left, right) {
 
       velocities(left, right, function (v, omega) {
+        addMotionCard(v, omega);
         var samples = model.updateMotionModelSamples(pose.x, pose.y, pose.heading, v, omega, dt);
         updateMotionModelDisplay(samples.x, samples.y, samples.heading, pose.x, pose.y, pose.heading);
 

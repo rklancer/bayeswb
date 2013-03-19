@@ -48,7 +48,7 @@ body {
 	width: 16em;
   height: 16em;
   left: 1em;
-  top: 5em;
+  top: 7em;
   background-color: rgb(204, 236, 248);
 }
 
@@ -75,7 +75,7 @@ body {
   width: 16em;
   height: 22em;
   left: 1em;
-  top: 22em;
+  top: 24em;
 }
 
 #motion-model-display p {
@@ -83,5 +83,18 @@ body {
   font-size: 18px;
   line-height: 24px;
   color: #999;
+}
+
+#data-cards {
+  position: absolute;
+  width: 100%;
+  left: 1em;
+  top: 1em;
+}
+
+#data-cards .card{
+  top: 0;
+  width: 4em;
+  height: 4em;
 }
 
