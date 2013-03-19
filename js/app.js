@@ -18,7 +18,8 @@ var dt = 1,
     nPoses = 0,
     updateTurtle,
     updateMotionModelDisplay,
-    formatter = d3.format('1.2f'),
+    formatter1f = d3.format('.1f'),
+    formatter2f = d3.format('1.2f'),
     motionCards = [],
     nMotionCards = 0;
 
@@ -220,7 +221,7 @@ function setupMotionModelDisplay() {
 function addMotionCard(v, omega) {
   var emsize = parseInt($('body').css('font-size'), 10),
 
-      card = $('<div class="card"></div>')
+      card = $('<div class="card"><span class="display translational-velocity"></span><span class="display angular-velocity"></span></div>')
         .appendTo('#data-cards'),
 
       height = card.outerHeight(),
@@ -241,6 +242,12 @@ function addMotionCard(v, omega) {
       spacePerCard = 4.5 * emsize,
       sign = v > 0 ? 1 : -1,
       omegaSign = omega > 0 ? 1 : -1;
+
+  card.find('.display.translational-velocity')
+    .html(formatter2f(v/maxSpeed))
+    .css('color', blueThemeColor);
+  card.find('.display.angular-velocity')
+    .html(formatter1f(degrees(omega)) +"&deg;").css('color', purpleAccentColor);
 
   v = Math.abs(v);
   omega = Math.abs(omega);

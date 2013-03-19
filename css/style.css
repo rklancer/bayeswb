@@ -92,9 +92,23 @@ body {
   top: 1em;
 }
 
-#data-cards .card{
+#data-cards .card {
   top: 0;
   width: 4em;
   height: 4em;
+  padding: 0;
 }
 
+#data-cards .card .display {
+  position: absolute;
+  font-weight: 400;
+  left: 1.2em;
+}
+
+#data-cards .card .display.angular-velocity {
+  top: 1.8em;
+}
+
+#data-cards .card .display.translational-velocity {
+  top: 2.8em;
+}
