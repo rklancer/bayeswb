@@ -255,7 +255,7 @@ function addMotionCard(v, omega) {
   var // width of arrow shaft
       a = 0.1,
       // total height of arrow, bottom to tip
-      b = 0.8,
+      b = 0.4,
       // extra width of arrow head (on either side)
       c = 0.06,
       // length of arrow head
@@ -270,8 +270,8 @@ function addMotionCard(v, omega) {
                'L' + x(a) + ' ' + y(Math.max(0, b * v/maxSpeed - d)) + ' ' +
                'L' + x(a) + ' ' + y(0) +'z')
     .attr('fill', blueThemeColor)
-    .attr('transform', 'translate(' + x(0.15) + ', ' + (-0.1 * height) + ')' +
-                       'rotate(' + (sign * 90 - 90) + ' ' + x(a/2) + ' ' + y(0.5 * b) + ')');
+    .attr('transform', 'translate(' + x(0.15) + ' ' + ((-b-0.1) * height) + ') ' +
+                       'rotate(' + (sign * 90 - 90) + ' ' + x(a/2) + ' ' + height +')');
 
 
   motionCards.push(svg);
