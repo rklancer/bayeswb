@@ -174,7 +174,7 @@ function setupMotionModelDisplay() {
         .attr('x2', scale(1.5 * maxSpeed * dt))
         .attr('y2', cy)
         .attr('transform', function (d) {
-           return 'rotate(-90 ' + cx + ' ' + cy + ')';
+          return 'rotate(-90 ' + cx + ' ' + cy + ')';
         });
 
 
