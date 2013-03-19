@@ -255,13 +255,13 @@ function addMotionCard(v, omega) {
 
   // TODO pull into 'arrow' path generator
   var // width of arrow shaft
-      a = 0.1,
+      a = 0.07,
       // total height of arrow, bottom to tip
-      b = 0.4,
+      b = 0.45,
       // extra width of arrow head (on either side)
-      c = 0.06,
+      c = 0.04,
       // length of arrow head
-      d = 0.2,
+      d = 0.15,
 
       // inner diameter of arc
       id = 0.7,
@@ -282,7 +282,7 @@ function addMotionCard(v, omega) {
                'L' + x(a) + ' ' + y(Math.max(0, b * v/maxSpeed - d)) + ' ' +
                'L' + x(a) + ' ' + y(0) +'z')
     .attr('fill', blueThemeColor)
-    .attr('transform', 'translate(' + x(0.15) + ' ' + ((-b-0.1) * height) + ') ' +
+    .attr('transform', 'translate(' + x(0.10) + ' ' + ((-b-0.05) * height) + ') ' +
                        'rotate(' + (sign * 90 - 90) + ' ' + x(a/2) + ' ' + height +')');
 
   var arcPath = d3.svg.arc()({
