@@ -191,7 +191,7 @@ function setupMotionModelDisplay() {
 
     points.enter().append('circle')
       .attr('class', 'sample')
-      .attr('fill', 'black')
+      .attr('fill', blueThemeColor)
       .attr('fill-opacity', 0.5)
       .attr('r', '1px');
 
@@ -202,7 +202,7 @@ function setupMotionModelDisplay() {
 
     ticks.enter().append('line')
       .attr('class', 'sample')
-      .attr('stroke', turtleColor)
+      .attr('stroke', purpleAccentColor)
       .attr('stroke-opacity', 0.2)
       .attr('stroke-width', '1px')
       .attr('x1', scale(1.35 * maxSpeed * dt))
