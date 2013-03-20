@@ -1,6 +1,48 @@
-openlayers for floor plan?
+Immediate Goal: draw a heatmap on #field to represent position estimate (w/o incorporating sensor
+readings). Start with 100% certainty of being at center and represent the increasing *uncertainty*
+as you drive by the increasing "cloud" of possibly-occupied cells on the heatmap.
 
- (1) need a good editor
- (2) is it easy to use openlayers for the floor plan?
- 
- 
+TODO.
+
+ 0. Modify setupTurtle/updateTurtle to create a single robot turtle <g> that gets updates, and
+    only create heading indicators every time.
+
+ 1. Decouple animation of robot from reading of joystick
+    - read joystick every 250 ms or so. OK to use current interval callback baked into touchjoy.
+    - update motion card when joystick is read
+    - have motion card (motion _data_) array save data, not <svg>
+    - use seperate requestAnimationFrame based interval for updating turtle. Read current joystick
+      state from latest motion card.
+    - modify robot.js to be able to create a single motion sample for updating turtle. (this also
+      preps for (3) below)
+
+ 2. Sample motion model asynchronously
+   - start by refactoring updateMotionModelSamples to accept a callback
+   - later, pass samples back and forth using window.postMessage so we're ready for web workers
+
+ 3. Create stochastic forward motion model that is different from statistical model to be used for
+    localization. Use this to animate the turtle.
+
+ 4. Create additional method in robotModel that updates a stateful localization estimate for M
+    samples ... Note that as a side effect (for efficiency) this can record the dx, dy, dHeading
+    associated with the first N samples of these M samples, for use by the "Motion Model" display.
+    (This is the beginning of the particle filter)
+
+ Somewhere in there:
+  - refactor motion cards to use an explicit arrow-drawing method
+  - make screen resizable
+
+After this is done, take a look at:
+ - benchmarking
+ - requirejs or similar build process
+ - test framework
+ - overall refactoring
+
+Other notes:
+  - in order to record a "tick history", we'll need to cut down on the number of samples that we
+    save to memory. Perhaps the only practical approach that allows complete playback is to copy the
+    particles to tick history every n steps, and also record random number seeds so that history can
+    be played back deterministically. This means using a seeded RNG like
+    http://davidbau.com/archives/2010/01/30/random_seeds_coded_hints_and_quintillions.html#more and
+    wrapping it carefully so that all code is forced to be explicit about the seed it uses, and
+    stores the seeds in the tick history.
