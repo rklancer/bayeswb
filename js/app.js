@@ -65,7 +65,9 @@ function setupTurtle() {
             .domain([0,2]),
       poseTrailOpacity = d3.scale.linear()
         .domain([0, poseTrailLength-1])
-        .range([0.7, 0.1]);
+        .range([0.7, 0.1]),
+
+      turtle;
 
   if (width > height) {
     x.domain([-width/height, width/height]);
@@ -77,53 +79,59 @@ function setupTurtle() {
     l.range([0, width]);
   }
 
+  turtle = svg.append('g')
+                .attr('class', 'turtle')
+                .attr('stroke', turtleColor);
+
+  turtle.append('circle')
+          .attr('class', 'body')
+          .attr('r', l(axleTrack/2))
+          .attr('fill-opacity', 0)
+          .attr('cx', 0)
+          .attr('cy', 0);
+
+  [-l(axleTrack/2), l(axleTrack/2)].forEach(function(y) {
+    turtle.append('rect')
+            .attr('class', 'wheel')
+            .attr('height', l(axleTrack/10))
+            .attr('width', l(axleTrack/4))
+            .attr('fill-opacity', 1)
+            .attr('fill', turtleColor)
+            .attr('rx', l(axleTrack/40))
+            .attr('ry', l(axleTrack/40))
+            .attr('x', -l(axleTrack/8))
+            .attr('y', y - l(axleTrack/20));
+  });
+
+  function setTransform (selection) {
+    selection.attr('transform', function(d) {
+      return 'translate(' + x(d.x) + ',' + y(d.y) + ') rotate(' + degrees(-d.heading) + ')';
+    });
+  }
+
   updateTurtle = function(pose) {
     pushToPoseTrail(pose);
 
-    var selection = svg.selectAll('g.turtle').data(poseTrailData),
-        enteringGroup = selection.enter().append('g');
+    var poseTrail = svg.selectAll('path.headingIndicator').data(poseTrailData);
 
-    enteringGroup
-      .attr('class', 'turtle')
-      .attr('stroke', turtleColor)
-      .append('circle')
-        .attr('class', 'body')
-        .attr('r', l(axleTrack/2))
-        .attr('fill-opacity', 0)
-        .attr('cx', 0)
-        .attr('cy', 0);
-
-    enteringGroup
+    poseTrail.enter()
       .append('path')
         .attr('class', 'headingIndicator')
         .attr('stroke', headingColor)
         .attr('d', 'm' + l(axleTrack/4) + ' 0 l' + l(axleTrack/4) + ' 0');
 
-    [-l(axleTrack/2), l(axleTrack/2)].forEach(function(y) {
-      enteringGroup
-        .append('rect')
-        .attr('class', 'wheel')
-        .attr('height', l(axleTrack/10))
-        .attr('width', l(axleTrack/4))
-        .attr('fill-opacity', 1)
-        .attr('fill', turtleColor)
-        .attr('rx', l(axleTrack/40))
-        .attr('ry', l(axleTrack/40))
-        .attr('x', -l(axleTrack/8))
-        .attr('y', y - l(axleTrack/20));
-    });
-
-    selection
-      .attr('transform', function(d) {
-        return 'translate(' + x(d.x) + ',' + y(d.y) + ') rotate(' + degrees(-d.heading) + ')';
-      })
+    poseTrail.call(setTransform)
       .filter(function(d) {
         return d !== pose;
       }).attr('stroke-opacity', function(d, i) {
         return poseTrailOpacity(poseTrailData.length - 2 - i);
-      }).selectAll('.turtle .wheel, .turtle .body').remove();
+      });
 
-    selection.exit().remove();
+    poseTrail.exit().remove();
+
+    turtle.data([pose]).call(setTransform);
+
+
   };
 
   updateTurtle(pose);
