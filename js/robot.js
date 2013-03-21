@@ -12,16 +12,16 @@ robotModel = function() {
       // motion sampler parameters
 
       // dependence of V on V
-      alpha1 = Math.pow(0.001/maxV, 2),
+      alpha1 = Math.pow(0.0005/maxV, 2),
 
       // dependence of V on omega
-      alpha2 = Math.pow(0.001/maxOmega, 2),
+      alpha2 = Math.pow(0.0005/maxOmega, 2),
 
       // dependence of omega on V
-      alpha3 = Math.pow(0.05/maxV, 2),
+      alpha3 = Math.pow(0.005/maxV, 2),
 
       // dependence of omega on omega
-      alpha4 = Math.pow(0.05/maxOmega, 2),
+      alpha4 = Math.pow(0.005/maxOmega, 2),
 
       // dependence of gamma (additional rotational velocity applied to heading but not x, y) on V
       alpha5 = 0.5 * alpha3,
