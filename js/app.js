@@ -376,45 +376,36 @@ function motorInputs(x, y, callback) {
   callback(left, right);
 }
 
-function velocities(left, right, callback) {
-  // Radius and angle of arc follows from differential drive geometry
-  // Here we assume the center point of the arc is to the left of the robot when driving forward
-  // (counterclockwise)
-
-  var sum = right + left,
-      diff = right - left;
-
-  callback(sum * maxSpeed / 2, diff * maxSpeed  / axleTrack);
-}
-
 
 $(document).ready(function() {
-  var model = robotModel(),
+  var model = robotModel(maxSpeed, axleTrack),
       animationSteps = 0,
-      v = 0,
-      omega = 0;
+      left = 0,
+      right = 0;
 
   setupTurtle();
   setupMotionModelDisplay();
 
   d3.timer(function() {
     animationSteps++;
-    model.updatePose(pose.x, pose.y, pose.heading, v, omega, 0, dt, 0, function(x, y, heading) {
-      pose = {
-        x: x,
-        y: y,
-        heading: normalizeAngle(heading)
-      };
-      updateTurtle(pose);
+    model.getVelocities(left, right, function(v, omega) {
+      model.updatePose(pose.x, pose.y, pose.heading, v, omega, 0, dt, 0, function(x, y, heading) {
+        pose = {
+          x: x,
+          y: y,
+          heading: normalizeAngle(heading)
+        };
+        updateTurtle(pose);
+      });
     });
   });
 
   touchjoy(250, function(x, y) {
-    motorInputs(x, y, function(left, right) {
-      velocities(left, right, function (_v, _omega) {
-        v = _v;
-        omega = _omega;
+    motorInputs(x, y, function(_left, _right) {
+      left = _left;
+      right = _right;
 
+      model.getVelocities(left, right, function (v, omega) {
         addMotionCard(v, omega);
         var samples = model.updateMotionModelSamples(pose.x, pose.y, pose.heading, v, omega, animationSteps * dt);
         updateMotionModelDisplay(samples.x, samples.y, samples.heading, pose.x, pose.y, pose.heading, animationSteps * dt);

@@ -1,6 +1,6 @@
 /*global d3, robotModel:true*/
 
-robotModel = function() {
+robotModel = function(maxSpeed, axleTrack) {
   var N = 100,
       x = new Float32Array(N),
       y = new Float32Array(N),
@@ -28,6 +28,18 @@ robotModel = function() {
 
       // dependence of gamma on omega
       alpha6 = 0.5 * alpha4;
+
+
+  function getVelocities(left, right, callback) {
+    // Radius and angle of arc follows from differential drive geometry
+    // Here we assume the center point of the arc is to the left of the robot when driving forward
+    // (counterclockwise)
+
+    var sum = right + left,
+        diff = right - left;
+
+    callback(sum * maxSpeed / 2, diff * maxSpeed  / axleTrack);
+  }
 
   function updatePose(xInitial, yInitial, theta, v, omega, gamma, dt, i, callback) {
     var x,
@@ -85,6 +97,7 @@ robotModel = function() {
   }
 
   return {
+    getVelocities: getVelocities,
     updatePose: updatePose,
     getSamples: getSamples,
     updateMotionModelSamples: updateMotionModelSamples
