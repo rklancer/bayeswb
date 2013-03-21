@@ -1,6 +1,6 @@
 /*global d3, $, touchjoy, robotModel */
 var dt = 1,
-    maxSpeed = 0.01,
+    maxSpeed = 0.005,
     axleTrack = 0.1,
     poseTrailLength = 15,
     blueThemeColor = 'rgb(51, 181, 229)',
@@ -40,7 +40,7 @@ function normalizeAngle(angle) {
 function pushToPoseTrail(pose) {
   if (nPoses === 0) poseTrailData.push(pose);
 
-  if (nPoses % 5 > 0) {
+  if (nPoses % 20 > 0) {
     poseTrailData.pop();
   }
   if (poseTrailData.length > poseTrailLength) {
@@ -130,8 +130,6 @@ function setupTurtle() {
     poseTrail.exit().remove();
 
     turtle.data([pose]).call(setTransform);
-
-
   };
 
   updateTurtle(pose);
@@ -192,11 +190,13 @@ function setupMotionModelDisplay() {
         });
 
 
-  updateMotionModelDisplay = function(xs, ys, headings, xRef, yRef, headingRef) {
+  updateMotionModelDisplay = function(xs, ys, headings, xRef, yRef, headingRef, dt) {
     headingRef = degrees(headingRef) - 90;
 
     var points = samplesLayer.selectAll('circle.sample').data(xs),
         ticks = samplesLayer.selectAll('line.sample').data(headings);
+
+    scale.domain([-1.5 * maxSpeed * dt, 1.5 * maxSpeed * dt]);
 
     points.enter().append('circle')
       .attr('class', 'sample')
@@ -389,38 +389,36 @@ function velocities(left, right, callback) {
 
 
 $(document).ready(function() {
-  var model = robotModel();
+  var model = robotModel(),
+      animationSteps = 0,
+      v = 0,
+      omega = 0;
 
   setupTurtle();
   setupMotionModelDisplay();
 
-  //addMotionCard(0.7 * maxSpeed, 0.1);
+  d3.timer(function() {
+    animationSteps++;
+    model.updatePose(pose.x, pose.y, pose.heading, v, omega, 0, dt, 0, function(x, y, heading) {
+      pose = {
+        x: x,
+        y: y,
+        heading: normalizeAngle(heading)
+      };
+      updateTurtle(pose);
+    });
+  });
 
-  touchjoy(100, function(x, y) {
-
-    // TODO.
-    // 1. Create "forward" stochastic motion model (model as a stochastic process with some
-    //    autocorrelation and occasional discrete "bumps" or "slips") that is decoupled from the
-    //    statistical motion model that will be used for localization.)
-    // 2. Accept joystick input *less* frequently but animate the turtle smoothly (30 or 60fps)
-    //    between successive inputs.
-
+  touchjoy(250, function(x, y) {
     motorInputs(x, y, function(left, right) {
+      velocities(left, right, function (_v, _omega) {
+        v = _v;
+        omega = _omega;
 
-      velocities(left, right, function (v, omega) {
         addMotionCard(v, omega);
-        var samples = model.updateMotionModelSamples(pose.x, pose.y, pose.heading, v, omega, dt);
-        updateMotionModelDisplay(samples.x, samples.y, samples.heading, pose.x, pose.y, pose.heading);
-
-        // model.updatePose(pose.x, pose.y, pose.heading, v, omega, 0, dt, 0, function(x, y, heading) {
-        pose = {
-          x: samples.x[0],
-          y: samples.y[0],
-          heading: normalizeAngle(samples.heading[0])
-        };
-
-        updateTurtle(pose);
-        // });
+        var samples = model.updateMotionModelSamples(pose.x, pose.y, pose.heading, v, omega, animationSteps * dt);
+        updateMotionModelDisplay(samples.x, samples.y, samples.heading, pose.x, pose.y, pose.heading, animationSteps * dt);
+        animationSteps = 0;
       });
     });
   });
