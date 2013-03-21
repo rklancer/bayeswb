@@ -6,8 +6,8 @@ robotModel = function() {
       y = new Float32Array(N),
       heading = new Float32Array(N),
 
-      maxV = 0.01,
-      maxOmega = 0.2,
+      maxV = 0.005,
+      maxOmega = 0.1,
 
       // motion sampler parameters
 

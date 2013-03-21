@@ -282,7 +282,7 @@ function addMotionCard(v, omega) {
       id = 0.7,
 
       // exaggeration of omega (amount to multiply by to get angle of arc display)
-      exaggeration = 3;
+      exaggeration = 6;
 
   // ~degrees of arc taken up by full-length arrowhead
   var thetaArrow = d / (id + a/2),
