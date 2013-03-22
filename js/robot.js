@@ -41,25 +41,20 @@ robotModel = function(maxSpeed, axleTrack) {
     callback(sum * maxSpeed / 2, diff * maxSpeed  / axleTrack);
   }
 
-  function updatePose(xInitial, yInitial, theta, v, omega, gamma, dt, i, callback) {
-    var x,
-        y,
-        heading,
-        radius,
-        dTheta;
+  function updatePose(x, y, heading, v, omega, gamma, dt, i, callback) {
+    var dHeading = omega * dt,
+        radius;
 
     if (omega === 0) {
-      x = xInitial + v * dt;
-      y = yInitial + v * dt;
-      heading = theta + gamma * dt;
+      x += v * Math.cos(heading);
+      y += v * Math.sin(heading);
     } else {
-      radius = v/omega;
-      dTheta = omega * dt;
-
-      x = xInitial + radius * (Math.sin(theta + dTheta) - Math.sin(theta));
-      y = yInitial + radius * (Math.cos(theta) - Math.cos(theta + dTheta));
-      heading = theta + dTheta + gamma * dt;
+      radius = v / omega;
+      x += radius * (Math.sin(heading + dHeading) - Math.sin(heading));
+      y += radius * (Math.cos(heading) - Math.cos(heading + dHeading));
     }
+
+    heading += (dHeading + gamma * dt);
     callback(x, y, heading, i);
   }
 
