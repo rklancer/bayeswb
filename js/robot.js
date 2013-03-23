@@ -1,4 +1,4 @@
-/*global d3, robotModel:true*/
+/*global d3, normalizeAngle, robotModel:true*/
 
 robotModel = function(maxSpeed, axleTrack) {
   var N = 100,
@@ -68,13 +68,13 @@ robotModel = function(maxSpeed, axleTrack) {
   function updateSample(_x, _y, _heading, i) {
     x[i] = _x;
     y[i] = _y;
-    heading[i] = _heading;
+    heading[i] = normalizeAngle(_heading);
   }
 
   function updateDelta(_dx, _dy, _dHeading, i) {
     dx[i] = _dx;
     dy[i] = _dy;
-    dHeading[i] = _dHeading;
+    dHeading[i] = normalizeAngle(_dHeading);
   }
 
   function getSamples() {
@@ -114,10 +114,19 @@ robotModel = function(maxSpeed, axleTrack) {
     return this.getSamples();
   }
 
+  function setAllSamples(_x, _y, _heading) {
+    for (var i = 0; i < N; i++) {
+      x[i] = _x;
+      y[i] = _y;
+      heading[i] = _heading;
+    }
+  }
+
   return {
     getVelocities: getVelocities,
     updatePose: updatePose,
     getSamples: getSamples,
+    setAllSamples: setAllSamples,
     updateMotionModelSamples: updateMotionModelSamples
   };
 

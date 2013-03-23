@@ -18,6 +18,7 @@ var dt = 1,
     nPoses = 0,
     updateTurtle,
     updateMotionModelDisplay,
+    updatePoseSamples,
     formatter1f = d3.format('.1f'),
     formatter2f = d3.format('1.2f'),
     motionCards = [],
@@ -67,7 +68,8 @@ function setupTurtle() {
         .domain([0, poseTrailLength-1])
         .range([0.7, 0.1]),
 
-      turtle;
+      turtle,
+      poseSamples;
 
   if (width > height) {
     x.domain([-width/height, width/height]);
@@ -133,6 +135,21 @@ function setupTurtle() {
   };
 
   updateTurtle(pose);
+
+  updatePoseSamples = function(xs, ys, heading) {
+    var poseSamples = svg.selectAll('circle.pose-sample').data(xs);
+
+    poseSamples.enter()
+      .append('circle')
+      .attr('class', 'pose-sample')
+      .attr('fill', blueThemeColor)
+      .attr('fill-opacity', 1)
+      .attr('r', '2px');
+
+    poseSamples
+      .attr('cx', function(d, i) { return x(xs[i]); })
+      .attr('cy', function(d, i) { return y(ys[i]); });
+  };
 }
 
 function setupMotionModelDisplay() {
@@ -223,6 +240,7 @@ function setupMotionModelDisplay() {
       });
   };
 }
+
 
 function addMotionCard(v, omega) {
   var emsize = parseInt($('body').css('font-size'), 10),
@@ -383,6 +401,7 @@ $(document).ready(function() {
 
   setupTurtle();
   setupMotionModelDisplay();
+  model.setAllSamples(pose.x, pose.y, pose.heading);
 
   d3.timer(function() {
     animationSteps++;
@@ -409,6 +428,7 @@ $(document).ready(function() {
         model.updateMotionModelSamples(pose.x, pose.y, pose.heading, v, omega, animationSteps * dt);
         samples = model.getSamples();
         updateMotionModelDisplay(samples.dx, samples.dy, samples.dHeading, animationSteps * dt);
+        updatePoseSamples(samples.x, samples.y, samples.heading);
         animationSteps = 0;
       });
 
