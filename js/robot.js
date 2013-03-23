@@ -2,9 +2,16 @@
 
 robotModel = function(maxSpeed, axleTrack) {
   var N = 100,
+
+      // statefully updated samples of robot location
       x = new Float32Array(N),
       y = new Float32Array(N),
       heading = new Float32Array(N),
+
+      // the deltas, ie. at each step x[n] += dx[n]
+      dx = new Float32Array(N),
+      dy = new Float32Array(N),
+      dHeading = new Float32Array(N),
 
       maxV = 0.005,
       maxOmega = 0.1,
@@ -64,17 +71,26 @@ robotModel = function(maxSpeed, axleTrack) {
     heading[i] = _heading;
   }
 
+  function updateDelta(_dx, _dy, _dHeading, i) {
+    dx[i] = _dx;
+    dy[i] = _dy;
+    dHeading[i] = _dHeading;
+  }
+
   function getSamples() {
     return {
       x: x,
       y: y,
-      heading: heading
+      heading: heading,
+      dx: dx,
+      dy: dy,
+      dHeading: dHeading
     };
   }
 
   // Generate N samples of motion using velocity-model sampler
   // See Thrun, Burgard and Fox, Probabilistic Robotics, Chapter 5.
-  function updateMotionModelSamples(xInitial, yInitial, theta, v, omega, dt) {
+  function updateMotionModelSamples(xInitial, yInitial, headingInitial, v, omega, dt) {
     var vSq = v*v,
         omegaSq = omega*omega,
 
@@ -82,10 +98,17 @@ robotModel = function(maxSpeed, axleTrack) {
         omegaSampler = d3.random.normal(omega, Math.sqrt(alpha3*vSq + alpha4*omegaSq)),
         gammaSampler = d3.random.normal(0, Math.sqrt(alpha5*vSq + alpha6*omegaSq)),
 
-        i;
+        i,
+        vHat,
+        omegaHat,
+        gammaHat;
 
     for (i = 0; i < N; i++) {
-      updatePose(xInitial, yInitial, theta, vSampler(), omegaSampler(), gammaSampler(), dt, i, updateSample);
+      vHat = vSampler();
+      omegaHat = omegaSampler();
+      gammaHat = gammaSampler();
+      updatePose(x[i], y[i], heading[i], vHat, omegaHat, gammaHat, dt, i, updateSample);
+      updatePose(0, 0, 0, vHat, omegaHat, gammaHat, dt, i, updateDelta);
     }
 
     return this.getSamples();

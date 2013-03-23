@@ -190,9 +190,7 @@ function setupMotionModelDisplay() {
         });
 
 
-  updateMotionModelDisplay = function(xs, ys, headings, xRef, yRef, headingRef, dt) {
-    headingRef = degrees(headingRef) - 90;
-
+  updateMotionModelDisplay = function(xs, ys, headings, dt) {
     var points = samplesLayer.selectAll('circle.sample').data(xs),
         ticks = samplesLayer.selectAll('line.sample').data(headings);
 
@@ -206,7 +204,7 @@ function setupMotionModelDisplay() {
 
     points
       .attr('transform', function (d, i) {
-        return 'rotate(' + headingRef + ' ' + cx + ' ' + cy + ') translate(' + scale(xs[i] - xRef) + ', ' + scale(yRef - ys[i]) +')';
+        return 'rotate(-90 ' + cx + ' ' + cy + ') translate(' + scale(xs[i]) + ', ' + scale(-ys[i]) +')';
       });
 
     ticks.enter().append('line')
@@ -221,7 +219,7 @@ function setupMotionModelDisplay() {
 
     ticks
       .attr('transform', function (d) {
-        return 'rotate(' + (headingRef - degrees(d)) + ' ' + cx + ' ' + cy + ')';
+        return 'rotate(' + (-90 - degrees(d)) + ' ' + cx + ' ' + cy + ')';
       });
   };
 }
@@ -406,9 +404,12 @@ $(document).ready(function() {
       right = _right;
 
       model.getVelocities(left, right, function (v, omega) {
+        var samples;
+
         addMotionCard(v, omega);
-        var samples = model.updateMotionModelSamples(pose.x, pose.y, pose.heading, v, omega, animationSteps * dt);
-        updateMotionModelDisplay(samples.x, samples.y, samples.heading, pose.x, pose.y, pose.heading, animationSteps * dt);
+        model.updateMotionModelSamples(pose.x, pose.y, pose.heading, v, omega, animationSteps * dt);
+        samples = model.getSamples();
+        updateMotionModelDisplay(samples.dx, samples.dy, samples.dHeading, animationSteps * dt);
         animationSteps = 0;
       });
     });
