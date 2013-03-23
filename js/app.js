@@ -399,10 +399,9 @@ $(document).ready(function() {
   });
 
   touchjoy(250, function(x, y) {
-    motorInputs(x, y, function(_left, _right) {
-      left = _left;
-      right = _right;
+    motorInputs(x, y, function(nextLeft, nextRight) {
 
+      // first, generate samples using the data that generated the animation during the last "tick"
       model.getVelocities(left, right, function (v, omega) {
         var samples;
 
@@ -412,6 +411,10 @@ $(document).ready(function() {
         updateMotionModelDisplay(samples.dx, samples.dy, samples.dHeading, animationSteps * dt);
         animationSteps = 0;
       });
+
+      // now update left, right for the animation during the next tick
+      left = nextLeft;
+      right = nextRight;
     });
   });
 });
